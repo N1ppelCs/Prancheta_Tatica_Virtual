@@ -6,7 +6,8 @@ async function initializeDatabase() {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD || '010320'
+      password: process.env.DB_PASSWORD || '010320',
+      port: process.env.DB_PORT || 3306
     });
     await connection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME || 'Taticas'}\`;`);
     await connection.end();
@@ -20,6 +21,7 @@ const pool = mysql.createPool({
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '010320',
   database: process.env.DB_NAME || 'Taticas',
+  port: process.env.DB_PORT || 3306,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
