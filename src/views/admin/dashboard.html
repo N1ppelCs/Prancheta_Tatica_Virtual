@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Dashboard - Gestão Tática</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-slate-900 border-b border-slate-800 h-16 flex items-center justify-between px-8 shrink-0 z-10 shadow-lg">
+    <div class="flex items-center gap-3">
+      <div class="bg-emerald-500/20 text-emerald-400 p-2 rounded-xl border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+        <i class="fa-solid fa-gears text-lg"></i>
+      </div>
+      <div>
+        <h1 class="text-base font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">CMS Administrativo</h1>
+        <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Painel de Controle Oficial</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="/" class="text-xs text-slate-300 hover:text-white transition flex items-center gap-1.5 bg-slate-800 px-3.5 py-1.5 rounded-lg border border-slate-700">
+        <i class="fa-solid fa-chalkboard-user"></i> Ver Prancheta
+      </a>
+      <a href="/admin/logout" class="text-xs text-red-400 hover:text-red-300 transition flex items-center gap-1.5 bg-red-950/20 border border-red-500/20 px-3.5 py-1.5 rounded-lg">
+        <i class="fa-solid fa-sign-out-alt"></i> Sair do Painel
+      </a>
+    </div>
+  </header>
+
+  <!-- Main CMS Body -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 overflow-y-auto">
+    
+    <!-- Left Column: Manage Teams (CMS Section 1) -->
+    <section class="lg:col-span-5 flex flex-col gap-6">
+      <!-- Create/Edit Team Form Card -->
+      <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h2 id="team-form-title" class="text-sm font-bold uppercase tracking-wider text-slate-300">Criar Nova Equipe</h2>
+          <button id="btn-reset-team-form" class="hidden text-xs text-slate-400 hover:text-white transition">Cancelar Edição</button>
+        </div>
+        <form id="team-form" class="space-y-4" enctype="multipart/form-data">
+          <input type="hidden" id="team-id-input">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Nome Oficial</label>
+            <input type="text" id="team-name" required placeholder="Ex: Palmeiras" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-xs focus:outline-none focus:border-emerald-500 text-slate-200">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Cor Primária (HEX)</label>
+              <div class="flex gap-2">
+                <input type="color" id="team-primary-color-picker" class="w-8 h-8 rounded border border-slate-800 bg-transparent cursor-pointer p-0" value="#006437">
+                <input type="text" id="team-primary-color" required placeholder="#006437" class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs uppercase text-slate-200 text-center">
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Cor Secundária (HEX)</label>
+              <div class="flex gap-2">
+                <input type="color" id="team-secondary-color-picker" class="w-8 h-8 rounded border border-slate-800 bg-transparent cursor-pointer p-0" value="#FFFFFF">
+                <input type="text" id="team-secondary-color" required placeholder="#FFFFFF" class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs uppercase text-slate-200 text-center">
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Escudo/Badge (PNG transparente ou SVG)</label>
+            <input type="file" id="team-crest" accept=".png,.svg" class="block w-full text-[11px] text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-emerald-950 file:text-emerald-400 hover:file:bg-emerald-900 cursor-pointer">
+          </div>
+          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded-lg transition text-xs flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-circle-check"></i> <span id="team-submit-label">Salvar Equipe</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Teams List -->
+      <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4 flex-1">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300 border-b border-slate-800 pb-3">Equipes Registradas</h2>
+        <div id="teams-list-container" class="space-y-3 max-h-[450px] overflow-y-auto pr-1">
+          <!-- Dynamically populated -->
+          <div class="text-xs text-slate-500 italic text-center py-4">Nenhuma equipe cadastrada.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Manage Players (CMS Section 2) -->
+    <section class="lg:col-span-7 flex flex-col gap-6">
+      <!-- Create/Edit Player Form Card -->
+      <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h2 id="player-form-title" class="text-sm font-bold uppercase tracking-wider text-slate-300">Cadastrar Jogador no Elenco</h2>
+          <button id="btn-reset-player-form" class="hidden text-xs text-slate-400 hover:text-white transition">Cancelar Edição</button>
+        </div>
+        <form id="player-form" class="grid grid-cols-1 md:grid-cols-2 gap-4" enctype="multipart/form-data">
+          <input type="hidden" id="player-id-input">
+          <input type="hidden" id="player-active-input" value="1">
+          
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Equipe Vinculada</label>
+            <select id="player-team" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-emerald-500 text-slate-300">
+              <option value="">Selecione a equipe...</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Nome Completo</label>
+            <input type="text" id="player-name" required placeholder="Ex: Raphael Veiga" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-xs focus:outline-none focus:border-emerald-500 text-slate-200">
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Número</label>
+              <input type="number" id="player-number" min="1" max="99" required placeholder="23" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-emerald-500 text-slate-200">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Posição</label>
+              <select id="player-position" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-emerald-500 text-slate-300">
+                <option value="GK">Goleiro (GK)</option>
+                <option value="CB">Zagueiro (CB)</option>
+                <option value="LB">Lateral Esquerdo (LB)</option>
+                <option value="RB">Lateral Direito (RB)</option>
+                <option value="DM">Volante (DM)</option>
+                <option value="CM">Meio-Campo (CM)</option>
+                <option value="AM">Meia Armador (AM)</option>
+                <option value="LW">Ponta Esquerda (LW)</option>
+                <option value="RW">Ponta Direita (RW)</option>
+                <option value="ST">Centroavante (ST)</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Foto Real do Jogador (JPEG/PNG/WEBP)</label>
+            <input type="file" id="player-photo" accept=".jpg,.jpeg,.png,.webp" class="block w-full text-[11px] text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-emerald-950 file:text-emerald-400 hover:file:bg-emerald-900 cursor-pointer">
+          </div>
+          <div class="md:col-span-2 flex justify-end gap-3 mt-2">
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-lg transition text-xs flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-circle-check"></i> <span id="player-submit-label">Adicionar ao Elenco</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Players Roster -->
+      <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4 flex-1">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300">Relação de Atletas por Equipe</h2>
+          <select id="filter-team-players" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1 text-xs text-slate-300 focus:outline-none">
+            <option value="">Selecione o clube...</option>
+          </select>
+        </div>
+        <div id="players-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[450px] overflow-y-auto pr-1">
+          <!-- Dynamically populated roster list -->
+          <div class="col-span-full text-xs text-slate-500 italic text-center py-6">Selecione uma equipe acima para ver e gerenciar os jogadores.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Elements references
+    const teamForm = document.getElementById('team-form');
+    const teamFormTitle = document.getElementById('team-form-title');
+    const teamIdInput = document.getElementById('team-id-input');
+    const teamNameInput = document.getElementById('team-name');
+    const teamPrimaryColor = document.getElementById('team-primary-color');
+    const teamPrimaryColorPicker = document.getElementById('team-primary-color-picker');
+    const teamSecondaryColor = document.getElementById('team-secondary-color');
+    const teamSecondaryColorPicker = document.getElementById('team-secondary-color-picker');
+    const teamSubmitLabel = document.getElementById('team-submit-label');
+    const btnResetTeamForm = document.getElementById('btn-reset-team-form');
+    const teamsListContainer = document.getElementById('teams-list-container');
+
+    const playerForm = document.getElementById('player-form');
+    const playerFormTitle = document.getElementById('player-form-title');
+    const playerIdInput = document.getElementById('player-id-input');
+    const playerActiveInput = document.getElementById('player-active-input');
+    const playerTeamSelect = document.getElementById('player-team');
+    const playerNameInput = document.getElementById('player-name');
+    const playerNumberInput = document.getElementById('player-number');
+    const playerPositionSelect = document.getElementById('player-position');
+    const playerSubmitLabel = document.getElementById('player-submit-label');
+    const btnResetPlayerForm = document.getElementById('btn-reset-player-form');
+    const filterTeamPlayers = document.getElementById('filter-team-players');
+    const playersListContainer = document.getElementById('players-list-container');
+
+    // HEX input syncs
+    teamPrimaryColorPicker.addEventListener('input', (e) => teamPrimaryColor.value = e.target.value.toUpperCase());
+    teamPrimaryColor.addEventListener('input', (e) => {
+      if (/^#[0-9A-F]{6}$/i.test(e.target.value)) teamPrimaryColorPicker.value = e.target.value;
+    });
+
+    teamSecondaryColorPicker.addEventListener('input', (e) => teamSecondaryColor.value = e.target.value.toUpperCase());
+    teamSecondaryColor.addEventListener('input', (e) => {
+      if (/^#[0-9A-F]{6}$/i.test(e.target.value)) teamSecondaryColorPicker.value = e.target.value;
+    });
+
+    // Reset forms
+    btnResetTeamForm.addEventListener('click', () => {
+      teamForm.reset();
+      teamIdInput.value = '';
+      teamFormTitle.textContent = 'Criar Nova Equipe';
+      teamSubmitLabel.textContent = 'Salvar Equipe';
+      btnResetTeamForm.classList.add('hidden');
+    });
+
+    btnResetPlayerForm.addEventListener('click', () => {
+      playerForm.reset();
+      playerIdInput.value = '';
+      playerActiveInput.value = '1';
+      playerFormTitle.textContent = 'Cadastrar Jogador no Elenco';
+      playerSubmitLabel.textContent = 'Adicionar ao Elenco';
+      btnResetPlayerForm.classList.add('hidden');
+    });
+
+    // Load initial CMS content
+    async function loadCMSData() {
+      await fetchTeams();
+    }
+
+    async function fetchTeams() {
+      try {
+        const response = await fetch('/api/teams');
+        const teams = await response.json();
+        
+        // Fill dropdowns
+        playerTeamSelect.innerHTML = '<option value="">Selecione a equipe...</option>';
+        filterTeamPlayers.innerHTML = '<option value="">Selecione o clube...</option>';
+        
+        teams.forEach(team => {
+          const opt1 = document.createElement('option');
+          opt1.value = team.id;
+          opt1.textContent = team.name;
+          playerTeamSelect.appendChild(opt1);
+
+          const opt2 = document.createElement('option');
+          opt2.value = team.id;
+          opt2.textContent = team.name;
+          filterTeamPlayers.appendChild(opt2);
+        });
+
+        // Render teams list
+        teamsListContainer.innerHTML = '';
+        if (teams.length === 0) {
+          teamsListContainer.innerHTML = '<div class="text-xs text-slate-500 italic text-center py-4">Nenhuma equipe cadastrada.</div>';
+          return;
+        }
+
+        teams.forEach(team => {
+          const item = document.createElement('div');
+          item.className = 'bg-slate-950/60 p-3.5 rounded-xl border border-slate-800 flex items-center justify-between hover:border-slate-700 transition';
+          item.innerHTML = `
+            <div class="flex items-center gap-3">
+              <img src="${team.crest_url}" class="w-9 h-9 object-contain bg-slate-900 p-1 rounded-lg border border-slate-800" alt="Crest">
+              <div>
+                <p class="text-xs font-bold text-slate-200">${team.name}</p>
+                <div class="flex gap-1.5 mt-1">
+                  <span class="w-3.5 h-3.5 rounded-full border border-slate-700" style="background-color: ${team.primary_color};" title="Primária: ${team.primary_color}"></span>
+                  <span class="w-3.5 h-3.5 rounded-full border border-slate-700" style="background-color: ${team.secondary_color};" title="Secundária: ${team.secondary_color}"></span>
+                </div>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="editTeam(${JSON.stringify(team).replace(/"/g, '&quot;')})" class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-1.5 rounded-lg border border-slate-700 transition text-[11px]" title="Editar">
+                <i class="fa-solid fa-edit"></i>
+              </button>
+              <button onclick="deleteTeam(${team.id})" class="bg-red-950/20 hover:bg-red-950/40 text-red-400 p-1.5 rounded-lg border border-red-500/20 transition text-[11px]" title="Excluir">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          `;
+          teamsListContainer.appendChild(item);
+        });
+      } catch (err) {
+        console.error('Error fetching teams:', err);
+      }
+    }
+
+    // Edit Team trigger
+    window.editTeam = (team) => {
+      teamIdInput.value = team.id;
+      teamNameInput.value = team.name;
+      teamPrimaryColor.value = team.primary_color;
+      teamPrimaryColorPicker.value = team.primary_color;
+      teamSecondaryColor.value = team.secondary_color;
+      teamSecondaryColorPicker.value = team.secondary_color;
+      
+      teamFormTitle.textContent = 'Editar Equipe';
+      teamSubmitLabel.textContent = 'Atualizar Equipe';
+      btnResetTeamForm.classList.remove('hidden');
+    };
+
+    // Delete Team trigger
+    window.deleteTeam = async (id) => {
+      if (!confirm('Deseja realmente excluir esta equipe?')) return;
+      try {
+        const response = await fetch(`/admin/api/teams/${id}`, { method: 'DELETE' });
+        const data = await response.json();
+        if (response.ok) {
+          alert('Equipe excluída com sucesso!');
+          fetchTeams();
+        } else {
+          alert(data.error || 'Erro ao excluir equipe');
+        }
+      } catch (err) {
+        alert('Erro ao excluir equipe');
+      }
+    };
+
+    // Team form Submit
+    teamForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = teamIdInput.value;
+      const formData = new FormData();
+      formData.append('name', teamNameInput.value);
+      formData.append('primary_color', teamPrimaryColor.value);
+      formData.append('secondary_color', teamSecondaryColor.value);
+      
+      const fileInput = document.getElementById('team-crest');
+      if (fileInput.files[0]) {
+        formData.append('crest', fileInput.files[0]);
+      }
+
+      const url = id ? `/admin/api/teams/${id}` : '/admin/api/teams';
+      const method = id ? 'PUT' : 'POST';
+
+      try {
+        const response = await fetch(url, {
+          method: method,
+          body: formData
+        });
+
+        if (response.ok) {
+          alert(id ? 'Equipe atualizada com sucesso!' : 'Equipe criada com sucesso!');
+          btnResetTeamForm.click();
+          fetchTeams();
+        } else {
+          const data = await response.json();
+          alert(data.error || 'Erro ao salvar equipe');
+        }
+      } catch (err) {
+        alert('Erro ao salvar equipe');
+      }
+    });
+
+    // Players list triggers
+    filterTeamPlayers.addEventListener('change', (e) => {
+      const teamId = e.target.value;
+      if (teamId) {
+        fetchPlayers(teamId);
+      } else {
+        playersListContainer.innerHTML = '<div class="col-span-full text-xs text-slate-500 italic text-center py-6">Selecione uma equipe acima para ver e gerenciar os jogadores.</div>';
+      }
+    });
+
+    async function fetchPlayers(teamId) {
+      try {
+        const response = await fetch(`/admin/api/teams/${teamId}/players`);
+        const players = await response.json();
+
+        playersListContainer.innerHTML = '';
+        if (players.length === 0) {
+          playersListContainer.innerHTML = '<div class="col-span-full text-xs text-slate-500 italic text-center py-4">Nenhum jogador cadastrado nesta equipe.</div>';
+          return;
+        }
+
+        players.forEach(player => {
+          const avatar = player.photo_url 
+            ? player.photo_url 
+            : `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23475569"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
+          
+          const item = document.createElement('div');
+          item.className = `bg-slate-950/60 p-4 rounded-xl border flex items-center justify-between hover:border-slate-700 transition ${player.is_active ? 'border-slate-800' : 'border-red-950 opacity-60'}`;
+          item.innerHTML = `
+            <div class="flex items-center gap-3">
+              <img src="${avatar}" class="w-10 h-10 rounded-full object-cover border-2 border-slate-700 bg-slate-800" alt="Avatar">
+              <div>
+                <p class="text-xs font-bold text-slate-200">${player.number}. ${player.name}</p>
+                <div class="flex gap-2 mt-1 items-center">
+                  <span class="text-[9px] bg-slate-800 text-slate-400 px-1 rounded font-bold">${player.position}</span>
+                  ${player.is_active 
+                    ? '<span class="text-[9px] text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded border border-emerald-500/20">Ativo</span>'
+                    : '<span class="text-[9px] text-red-400 bg-red-950/40 px-1.5 py-0.5 rounded border border-red-500/20">Inativo</span>'
+                  }
+                </div>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="editPlayer(${JSON.stringify(player).replace(/"/g, '&quot;')})" class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-1.5 rounded-lg border border-slate-700 transition text-[11px]" title="Editar">
+                <i class="fa-solid fa-edit"></i>
+              </button>
+              <button onclick="togglePlayerStatus(${JSON.stringify(player).replace(/"/g, '&quot;')})" class="${player.is_active ? 'bg-red-950/20 text-red-400 border-red-500/20 hover:bg-red-950/40' : 'bg-emerald-950/20 text-emerald-400 border-emerald-500/20 hover:bg-emerald-950/40'} p-1.5 rounded-lg border transition text-[11px]" title="${player.is_active ? 'Inativar (Soft Delete)' : 'Ativar'}">
+                <i class="fa-solid ${player.is_active ? 'fa-user-slash' : 'fa-user-check'}"></i>
+              </button>
+            </div>
+          `;
+          playersListContainer.appendChild(item);
+        });
+      } catch (err) {
+        console.error('Error fetching players:', err);
+      }
+    }
+
+    // Edit Player trigger
+    window.editPlayer = (player) => {
+      playerIdInput.value = player.id;
+      playerActiveInput.value = player.is_active;
+      playerTeamSelect.value = player.team_id;
+      playerNameInput.value = player.name;
+      playerNumberInput.value = player.number;
+      playerPositionSelect.value = player.position;
+
+      playerFormTitle.textContent = 'Editar Jogador';
+      playerSubmitLabel.textContent = 'Atualizar Jogador';
+      btnResetPlayerForm.classList.remove('hidden');
+    };
+
+    // Toggle player status
+    window.togglePlayerStatus = async (player) => {
+      const nextStatus = player.is_active ? 0 : 1;
+      const message = nextStatus === 0 
+        ? 'Deseja realmente desativar este jogador? Ele continuará salvo no histórico de jogadas, mas não aparecerá nos elencos ativos.'
+        : 'Deseja reativar este jogador?';
+      
+      if (!confirm(message)) return;
+
+      try {
+        // Always uses PUT to update is_active (works for both activate and deactivate)
+        const formData = new FormData();
+        formData.append('team_id', player.team_id);
+        formData.append('name', player.name);
+        formData.append('number', player.number);
+        formData.append('position', player.position);
+        formData.append('is_active', nextStatus);
+
+        const response = await fetch(`/admin/api/players/${player.id}`, {
+          method: 'PUT',
+          body: formData
+        });
+
+        if (response.ok) {
+          alert(nextStatus === 0 ? 'Jogador inativado com sucesso!' : 'Jogador reativado com sucesso!');
+          fetchPlayers(player.team_id);
+        } else {
+          const data = await response.json().catch(() => ({}));
+          alert(data.error || 'Erro ao alterar status do jogador');
+        }
+      } catch (err) {
+        alert('Erro ao conectar ao servidor');
+      }
+    };
+
+    // Player form Submit
+    playerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = playerIdInput.value;
+      const activeVal = playerActiveInput.value;
+
+      const formData = new FormData();
+      formData.append('team_id', playerTeamSelect.value);
+      formData.append('name', playerNameInput.value);
+      formData.append('number', playerNumberInput.value);
+      formData.append('position', playerPositionSelect.value);
+      formData.append('is_active', activeVal);
+
+      const fileInput = document.getElementById('player-photo');
+      if (fileInput.files[0]) {
+        formData.append('photo', fileInput.files[0]);
+      }
+
+      const url = id ? `/admin/api/players/${id}` : '/admin/api/players';
+      const method = id ? 'PUT' : 'POST';
+
+      try {
+        const response = await fetch(url, {
+          method: method,
+          body: formData
+        });
+
+        if (response.ok) {
+          alert(id ? 'Jogador atualizado com sucesso!' : 'Jogador cadastrado com sucesso!');
+          const teamSelected = playerTeamSelect.value;
+          btnResetPlayerForm.click();
+          
+          // Set selection dropdowns and reload
+          filterTeamPlayers.value = teamSelected;
+          fetchPlayers(teamSelected);
+        } else {
+          const data = await response.json();
+          alert(data.error || 'Erro ao registrar atleta');
+        }
+      } catch (err) {
+        alert('Erro ao salvar atleta');
+      }
+    });
+
+    // Run loader
+    loadCMSData();
+  </script>
+</body>
+</html>
